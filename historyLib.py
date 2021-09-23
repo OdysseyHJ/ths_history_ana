@@ -417,6 +417,7 @@ def historyRealdataProc(fileList):
                 index += 1
                 valList = getDataKV(lineList, index)
 
+                statDataObj.type = fileType
                 statDataObj.field_count = valList[0]
                 statDataObj.file_count = valList[1]
                 statDataObj.storage_count = valList[2]
@@ -443,18 +444,30 @@ def historyRealdataProc(fileList):
                 if hostname == 'nw_hq_shsz_200_120' and market == 'shase':
                     print("debug1", statistic_data[hostname][market].keys())
 
-                # 需要在这里校验lv1 lv2
+                # # 需要在这里校验lv1 lv2
                 if isLv2:
                     for key in statistic_data[hostname][market].keys():
                         try:
                             statistic_data[hostname][market][key].lv2flag = True
-                            datatype_dict_single[key].lv2flag = True
+                            # datatype_dict_single[key].lv2flag = True
                         except:
                             # print(hostname, market, datatype_dict_all.keys(), datatype_dict_single.keys())
                             pass
             else:
                 # print('lack base data:{}'.format(hostname))
                 pass
+            # 需要在这里校验lv1 lv2
+
+            # if isLv2:
+
+            single_day_lv2 = False
+            for key in datatype_dict_single.keys():
+                if datatype_dict_single[key].type == DATA_FILE_HISORDERS:
+                    single_day_lv2 = True
+                    break
+            if single_day_lv2:
+                for key in datatype_dict_single.keys():
+                    datatype_dict_single[key].lv2flag = True
             host_market_singleday[hostname][market] = datatype_dict_single
     return
 
@@ -499,6 +512,9 @@ def mergeDict(target, source, iscover=False):
         elif key not in target.keys():
             target[key] = source[key]
     return target
+
+# def single_day_lv2proc(dict2proc):
+
 
 def genCsv(path):
     tableHead = ['主机名',
@@ -741,9 +757,14 @@ def getMaxValueKey(tdict):
 
 
 siMarketDict = CMarketDict()
-def MarketDataInit():
-    for host in statistic_data.keys():
-        hostData = statistic_data[host]
+def MarketDataInit(type='kline'):
+    dataHostDict = {}
+    if type == 'real':
+        dataHostDict = host_market_singleday
+    else:
+        dataHostDict = statistic_data
+    for host in dataHostDict.keys():
+        hostData = dataHostDict[host]
         for market in hostData.keys():
             marketData = hostData[market]
 
@@ -830,15 +851,17 @@ def dictSortedByVal(unsortedDict, reverseFlag=False):
 def dictSortedByKey(unsortedDict, reverseFlag=False):
     return dict(sorted(unsortedDict.items(), key=lambda d: d[0], reverse=reverseFlag))
 
-def checkIsOutofdate(hostname, market, cmpdate=20210630):
+def checkIsOutofdate(hostname, market, cmpdate=20210730):
     isOut = False
     if hostname not in host_updatetime.keys():
         return True
     if market not in host_updatetime[hostname].keys():
         return True
     date = host_updatetime[hostname][market]
+
     if date <= cmpdate:
         isOut = True
+        # print(date)
         print("out of date: {} {}".format(hostname, market))
     return isOut
 
@@ -851,4 +874,5 @@ def init(path):
     filelistReal = getFileList(pathReal)
     historyRealdataProc(filelistReal)
 
-    MarketDataInit()
+    # MarketDataInit('kline')
+    MarketDataInit('real')

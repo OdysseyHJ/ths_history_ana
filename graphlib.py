@@ -34,6 +34,7 @@ def drawBarGraph(title, datatype='day', fieldtype='hostcount', savPath=''):
     else:
         graph_fullpath = '{}\{}.png'.format(savPath, title)
         plt.savefig(graph_fullpath)
+    # print(graph_fullpath)
     return
 
 #给每个柱子上面添加标注
@@ -81,20 +82,20 @@ def drawBarAll(path=''):
                                    historyLib.statKeyChn[field])
         drawBarGraph(title, datatype, field, savPath=path )
 
-        field = historyLib.STAT_KEY_FILE_CNT
-        title = '{}-{}'.format(historyLib.datatypeChn[datatype],
-                                   historyLib.statKeyChn[field])
-        drawBarGraph(title, datatype, field, savPath=path)
-
-        field = historyLib.STAT_KEY_FIELD_CNT
-        title = '{}-{}'.format(historyLib.datatypeChn[datatype],
-                                   historyLib.statKeyChn[field])
-        drawBarGraph(title, datatype, field, savPath=path )
-
-        field = historyLib.STAT_KEY_RECORD_CNT
-        title = '{}-{}'.format(historyLib.datatypeChn[datatype],
-                                   historyLib.statKeyChn[field])
-        drawBarGraph(title, datatype, field, savPath=path)
+        # field = historyLib.STAT_KEY_FILE_CNT
+        # title = '{}-{}'.format(historyLib.datatypeChn[datatype],
+        #                            historyLib.statKeyChn[field])
+        # drawBarGraph(title, datatype, field, savPath=path)
+        #
+        # field = historyLib.STAT_KEY_FIELD_CNT
+        # title = '{}-{}'.format(historyLib.datatypeChn[datatype],
+        #                            historyLib.statKeyChn[field])
+        # drawBarGraph(title, datatype, field, savPath=path )
+        #
+        # field = historyLib.STAT_KEY_RECORD_CNT
+        # title = '{}-{}'.format(historyLib.datatypeChn[datatype],
+        #                            historyLib.statKeyChn[field])
+        # drawBarGraph(title, datatype, field, savPath=path)
 
 def drawPlotAll(path='', field=historyLib.STAT_KEY_STOREAGE_CNT):
     for market in historyLib.marketChn.keys():
